@@ -34,7 +34,7 @@ func run() error {
 	storage := storage.New(*startingBlock)
 	scanner := scanner.New(*url, storage)
 
-	parser := parser.New(storage, scanner, *url)
+	parser := parser.New(storage)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/api/current-block", handlers.CurrentBlockHandler(parser)).Methods("GET")

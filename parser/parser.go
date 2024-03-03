@@ -3,7 +3,6 @@ package parser
 import (
 	"log/slog"
 
-	"github.com/zorjak/tx-parser/scanner"
 	"github.com/zorjak/tx-parser/storage"
 )
 
@@ -20,15 +19,11 @@ type Parser interface {
 
 type parser struct {
 	storage storage.Storage
-	scanner scanner.Scanner
-	url     string
 }
 
-func New(storage storage.Storage, scanner scanner.Scanner, url string) Parser {
+func New(storage storage.Storage) Parser {
 	return &parser{
 		storage: storage,
-		scanner: scanner,
-		url:     url,
 	}
 }
 
