@@ -6,7 +6,7 @@ Ethereum blockchain parser that will allow to query transactions for subscribed 
 
 to run application use:
 
-``` bash
+```bash
 go run ./cmd/tx-parser --starting_block <starting_block>
 ```
 
@@ -20,39 +20,36 @@ In order to test the application 3 endpoints are available:
 
 To get current processed block do
 
-``` bash
+```bash
 curl -X GET http://localhost:8080/api/current-block
 ```
 
 To get transactions for the address do
 
-``` bash
+```bash
 curl -X GET http://localhost:8080/api/transactions/{address}
 ```
 
 To subscribe to the address do
 
-``` bash
+```bash
 curl -X POST -H "Content-Type: application/json" -d '{"address":"some-address"}' http://localhost:8080/api/subscribe
 ```
 
 ## Implementation
 
-Scanner scans blocks for the ethereum blockchain and stores hashes of the transactions in the database.
-Hashes are stored in the storage (memory). Storage is a map which key is `address` (`From` field) or
-receiver (`To` field) of the transaction.
+Scanner scans blocks for the ethereum blockchain and stores hashes of the transactions in the storage.
 
-Scanner implements function to return full transaction when hash is provided.
+Storage is implemented as a memory using three maps:
 
-Storage contains a map of subscribed address. Subscribed addresses can be added with the endpoint that is provided
+1. `observedAddresses`: Stores addresses subscribed to the service.
+2. `transactionsOfAddress`: Stores transaction hashes for each address (sender or receiver).
+3. `transactions`: Stores full transaction data for each transaction hash.
 
 ## Other notes
 
-All transaction hashes are stored in the storage. I decided to store the hashes of all transactions because if new
-address is provided at some point in the future, we would have to rescan the whole blockchain from the start.
-
-When user request transactions for the address, first in the database are found hashes of the transactions and then all
-data of the transactions are queried from the blockchain node. I used this approach to save the storage. Although the
-storage is relatively cheap if the company maintains the ethereum node there is no need to have additional space to
-store transactions. However if the node is rented from a provider like Alchemy probably it is much cheaper to store all
-transactions data locally then do separate queries again when they are needed.
+1. Transaction data is stored in the database to facilitate returning full transaction details. While it's possible to
+   avoid storing transactions and only store hashes, doing so would require querying the EVM node later for each
+   transaction, which may be costlier if the company does not maintain its own EVM node, but uses some third-party
+   service (e.g. Alchemy, Infura, etc.).
+2. All transactions since the starting block are stored. While this approach ensures data integrity, it may not be necessary for the application's requirements. If only transactions from the block of subscription onwards are needed, storing transactions for subscribed addresses exclusively could be considered.
