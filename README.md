@@ -53,3 +53,6 @@ Storage is implemented as a memory using three maps:
    transaction, which may be costlier if the company does not maintain its own EVM node, but uses some third-party
    service (e.g. Alchemy, Infura, etc.).
 2. All transactions since the starting block are stored. While this approach ensures data integrity, it may not be necessary for the application's requirements. If only transactions from the block of subscription onwards are needed, storing transactions for subscribed addresses exclusively could be considered.
+3. Since the the storage is implemented as a memory and all transactions are stored, the total memory the application
+   consumes will grow fast. This would not be a problem if the storage was implemented as a database where the data are
+   stored in a persistent storage.
