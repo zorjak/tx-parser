@@ -39,9 +39,8 @@ type Storage interface {
 	SetLastParsedBlock(block int)
 	AddAddressToObserver(address string) bool
 	IsAddressObserved(address string) bool
-	AddTransactionToAddress(address string, transaction string) error
-	TransactionsOfAddress(address string) []string
 	AddTransaction(transaction Transaction)
+	TransactionsOfAddress(address string) []string
 	Transaction(hash string) (Transaction, error)
 }
 
@@ -95,14 +94,13 @@ func (s *storage) TransactionsOfAddress(address string) []string {
 	return transactions
 }
 
-func (s *storage) AddTransactionToAddress(address string, transaction string) error {
-	slog.Debug("adding transaction to address", "address", address, "transaction", transaction)
-	s.transactionsOfAddress[strings.ToLower(address)] = append(s.transactionsOfAddress[strings.ToLower(address)], transaction)
-	return nil
-}
-
 func (s *storage) AddTransaction(transaction Transaction) {
 	slog.Debug("adding transaction", "transaction", transaction)
+	s.transactionsOfAddress[strings.ToLower(transaction.From)] =
+		append(s.transactionsOfAddress[strings.ToLower(transaction.From)], strings.ToLower(transaction.Hash))
+	s.transactionsOfAddress[strings.ToLower(transaction.To)] =
+		append(s.transactionsOfAddress[strings.ToLower(transaction.To)], strings.ToLower(transaction.Hash))
+
 	s.transactions[strings.ToLower(transaction.Hash)] = transaction
 }
 

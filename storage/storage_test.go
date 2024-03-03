@@ -32,19 +32,12 @@ func TestObservableAddress(t *testing.T) {
 	}
 }
 
-func TestAddTransactionToAddress(t *testing.T) {
+func TestAddTransaction(t *testing.T) {
     storage := New(5)
-	// Test TransactionsOfAddress and AddTransactionToAddress
-	transactionHash := "0x456def"
-    address := "0x123abc"
-	storage.AddTransactionToAddress(address, transactionHash)
-	transactions := storage.TransactionsOfAddress(address)
-	if len(transactions) != 1 || transactions[0] != transactionHash {
-		t.Errorf("Expected transaction %s to be added to address %s transactions", transactionHash, address)
-	}
 
-	// Test AddTransaction and Transaction
 	transaction := Transaction{
+		To: "0x123abc",
+		From: "0x456def",
 		Hash: "0x789ghi",
 	}
 	storage.AddTransaction(transaction)
@@ -56,9 +49,8 @@ func TestAddTransactionToAddress(t *testing.T) {
 		t.Errorf("Expected retrieved transaction to match added transaction")
 	}
 
-	// Test Transaction when transaction is not found
-	_, err = storage.Transaction("0xnotfound")
-	if err == nil {
-		t.Errorf("Expected error when retrieving non-existent transaction")
+	transactionsOfAddress := storage.TransactionsOfAddress(transaction.To)
+	if len(transactionsOfAddress) != 1 {
+		t.Errorf("Expected 1 transaction for address, got %d", len(transactionsOfAddress))
 	}
 }

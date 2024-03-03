@@ -65,20 +65,6 @@ func (mr *MockStorageMockRecorder) AddTransaction(transaction any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTransaction", reflect.TypeOf((*MockStorage)(nil).AddTransaction), transaction)
 }
 
-// AddTransactionToAddress mocks base method.
-func (m *MockStorage) AddTransactionToAddress(address, transaction string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddTransactionToAddress", address, transaction)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AddTransactionToAddress indicates an expected call of AddTransactionToAddress.
-func (mr *MockStorageMockRecorder) AddTransactionToAddress(address, transaction any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTransactionToAddress", reflect.TypeOf((*MockStorage)(nil).AddTransactionToAddress), address, transaction)
-}
-
 // IsAddressObserved mocks base method.
 func (m *MockStorage) IsAddressObserved(address string) bool {
 	m.ctrl.T.Helper()

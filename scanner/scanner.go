@@ -71,8 +71,6 @@ func (s *scanner) ScanOneBlock(blockNumber int) error {
 
 	slog.Debug("number of transactions in block", "blockNumber", blockNumber, "transactions", len(data.Result.Transactions))
 	for _, tx := range data.Result.Transactions {
-		s.storage.AddTransactionToAddress(tx.To, tx.Hash)
-		s.storage.AddTransactionToAddress(tx.From, tx.Hash)
 		s.storage.AddTransaction(tx)
 	}
 
