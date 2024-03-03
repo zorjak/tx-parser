@@ -93,39 +93,3 @@ func (s *scanner) ScanBlocks() error {
 		s.storage.SetLastParsedBlock(lastBlock)
 	}
 }
-
-type Response struct {
-	JsonRpc string `json:"jsonrpc"`
-	Result  storage.Transaction `json:"result"`
-}
-
-func (s *scanner) GetTransaction(hash string) (storage.Transaction, error) {
-	payload := strings.NewReader("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"eth_getTransactionByHash\",\"params\":[\"" + hash + "\"]}")
-
-	req, err := http.NewRequest("POST", s.url, payload)
-	if err != nil {
-		return storage.Transaction{}, err
-	}
-
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return storage.Transaction{}, err
-	}
-
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return storage.Transaction{}, err
-	}
-
-	var data Response
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		return storage.Transaction{}, err
-	}
-
-	return data.Result, nil
-}
