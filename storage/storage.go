@@ -96,12 +96,14 @@ func (s *storage) TransactionsOfAddress(address string) []string {
 
 func (s *storage) AddTransaction(transaction Transaction) {
 	slog.Debug("adding transaction", "transaction", transaction)
-	s.transactionsOfAddress[strings.ToLower(transaction.From)] =
-		append(s.transactionsOfAddress[strings.ToLower(transaction.From)], strings.ToLower(transaction.Hash))
-	s.transactionsOfAddress[strings.ToLower(transaction.To)] =
-		append(s.transactionsOfAddress[strings.ToLower(transaction.To)], strings.ToLower(transaction.Hash))
 
-	s.transactions[strings.ToLower(transaction.Hash)] = transaction
+	from := strings.ToLower(transaction.From)
+	to := strings.ToLower(transaction.To)
+	hash := strings.ToLower(transaction.Hash)
+
+	s.transactionsOfAddress[from] = append(s.transactionsOfAddress[from], hash)
+	s.transactionsOfAddress[to] = append(s.transactionsOfAddress[to], hash)
+	s.transactions[hash] = transaction
 }
 
 func (s *storage) Transaction(hash string) (Transaction, error) {
